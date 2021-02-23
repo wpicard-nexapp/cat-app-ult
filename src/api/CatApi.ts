@@ -36,6 +36,7 @@ interface Cat {
 export interface CatPage {
   pageCount: number;
   currentPage: number;
+  totalCatCount: number;
   cats: Cat[];
 }
 
@@ -46,11 +47,20 @@ function getCatPage(queryParams: QueryParams): Promise<CatPage> {
   });
 
   return client.get()
-    .then(({response, headers}) => ({
-      pageCount: parseInt(headers.get("pagination-count") ?? "0"),
-      currentPage: queryParams.page,
-      cats: response
-    }));
+    .then(({ response, headers }) => {
+      const total = parseInt(headers.get("pagination-count") ?? "0");
+
+      return {
+        pageCount: calculatePageCount(total, queryParams.limit),
+        currentPage: queryParams.page,
+        totalCatCount: total,
+        cats: response
+      };
+    });
+}
+
+function calculatePageCount(total: number, perPage: number) {
+  return Math.ceil(total / perPage);
 }
 
 export const CatApi = {
