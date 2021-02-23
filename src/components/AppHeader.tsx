@@ -15,7 +15,7 @@ export function AppHeader({ spacing }: Props) {
     >
       <Typography variant="h1" align="center">
         Cat-App-Ult
-    </Typography>
+      </Typography>
     </AppBar>
   );
 }
