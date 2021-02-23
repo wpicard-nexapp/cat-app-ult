@@ -4,12 +4,12 @@ type Credentials = 'same-origin' | 'omit' | 'include' | undefined;
 
 type Body = { [key: string]: string | number | boolean | object } | FormData;
 
-interface Params {
+export interface Params {
   baseUrl: string;
   endpoint: string;
   token?: string;
   body?: Body;
-  queryParams?: { [key: string]: string | number | boolean };
+  queryParams?: { [key: string]: string | number | boolean | undefined };
   headers?: { [key: string]: string };
   credentials?: Credentials;
   captchaToken?: string;
@@ -25,7 +25,7 @@ class Client {
   public endpoint: string;
   public token?: string;
   public body?: Body;
-  public queryParams: { [key: string]: string | number | boolean };
+  public queryParams: { [key: string]: string | number | boolean | undefined };
   public headers: { [key: string]: string };
   public credentials?: Credentials;
   public captchaToken?: string;
@@ -56,7 +56,7 @@ class Client {
     this.allowUnAuthorizedResponse = allowUnAuthorizedResponse;
   }
 
-  public async get(): Promise<any> {
+  public async get() {
     this.headers = {
       'Pragma': 'no-cache',
       'Cache-Control': 'no-cache',
@@ -81,7 +81,7 @@ class Client {
     return await this.request('PATCH');
   }
 
-  public async request(method: Method): Promise<any> {
+  public async request(method: Method) {
     const response = await this.processRequest(method);
     return await this.handleResponse(response, method);
   }
@@ -136,7 +136,7 @@ class Client {
     return this.containsAFile() ? this.body : JSON.stringify(this.body);
   }
 
-  public async handleResponse(response: Response, method: Method): Promise<any> {
+  public async handleResponse(response: Response, method: Method) {
     const json = await this.parseContent(response, method);
 
     if (response.ok) {
